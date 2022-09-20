@@ -14,9 +14,11 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 ##CREATE TABLE IN DB
 class User(UserMixin, db.Model):
@@ -24,21 +26,23 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(1000))
-#Line below only required once, when creating DB.
+
+
+# Line below only required once, when creating DB.
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(1000))
     drinks = db.Column(db.Integer)
 
 
-#db.create_all()
+# db.create_all()
 
-#some_student = Student(
+# some_student = Student(
 #            name="Jaka",
 #            drinks=0,
 #        )
-#db.session.add(some_student)
-#db.session.commit()
+# db.session.add(some_student)
+# db.session.commit()
 
 @app.route('/')
 def home():
@@ -100,11 +104,12 @@ def clan(student_id):
     student = Student.query.filter_by(id=student_id).first()
     return render_template("clan.html", logged_in=True, name=student.name, drinks=student.drinks, id=student_id)
 
+
 @app.route('/edit/<int:student_id>')
 @login_required
 def edit(student_id):
     print(student_id)
-    
+
     student = Student.query.filter_by(id=student_id).first()
     student.drinks -= 1
     db.session.commit()
